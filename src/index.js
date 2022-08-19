@@ -56,11 +56,11 @@ async function onSearchForm(e) {
     refs.searchForm.reset();
   }
 
-  if (data.totalHits > 40) {
-    refs.loadMore.classList.remove('is-hidden');
-  } else {
-    refs.loadMore.classList.add('is-hidden');
-  }
+  // if (data.totalHits > 40) {
+  //   refs.loadMore.classList.remove('is-hidden');
+  // } else {
+  //   refs.loadMore.classList.add('is-hidden');
+  // }
 }
 
 async function onLoadMore() {
@@ -78,6 +78,7 @@ async function onLoadMore() {
       "We're sorry, but you've reached the end of search results."
     );
   }
+  refs.loadMore.classList.add('is-hidden');
 }
 
 function increment() {
