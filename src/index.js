@@ -41,28 +41,26 @@ async function onSearchForm(e) {
     return;
   }
 
-  await fetchPicture();
-}
+  const response = await fetchPicture(searchQuery, page, perPage);
+  const data = response.data;
+  console.log(response.data);
 
-const response = await fetchPicture(searchQuery, page, perPage);
-const data = response.data;
-console.log(response.data);
+  if (data.totalHits === 0) {
+    Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  } else {
+    Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    await renderMarkup(data.hits);
+    simpleLightBox.refresh();
+    refs.searchForm.reset();
+  }
 
-if (data.totalHits === 0) {
-  Notify.failure(
-    'Sorry, there are no images matching your search query. Please try again.'
-  );
-} else {
-  Notify.success(`Hooray! We found ${data.totalHits} images.`);
-  await renderMarkup(data.hits);
-  simpleLightBox.refresh();
-  refs.searchForm.reset();
-}
-
-if (data.totalHits > 40) {
-  refs.loadMore.classList.remove('is-hidden');
-} else {
-  refs.loadMore.classList.add('is-hidden');
+  if (data.totalHits > 40) {
+    refs.loadMore.classList.remove('is-hidden');
+  } else {
+    refs.loadMore.classList.add('is-hidden');
+  }
 }
 
 async function onLoadMore() {
