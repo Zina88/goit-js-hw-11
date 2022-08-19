@@ -9,6 +9,5 @@ async function fetchPicture(searchQuery, page, perPage) {
     `${BASE_URL}?key=${API_KEY}&q=${searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&page=${page}&per_page=${perPage}`
   );
 
-  console.log(response);
   return response;
 }

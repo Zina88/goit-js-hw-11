@@ -4,7 +4,7 @@ const refs = {
   gallery: document.querySelector('.gallery'),
 };
 
-function renderMarkup(images) {
+async function renderMarkup(images) {
   const markup = images
     .map(img => {
       const {
@@ -17,9 +17,10 @@ function renderMarkup(images) {
         downloads,
       } = img;
       return `
-    <a class="gallery__link" href="${largeImageURL}">
       <div class="photo-card">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+          <a class="photo-link" href="${largeImageURL}">
+            <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+          </a>
         <div class="info">
           <p class="info-item">
             <b>Likes ${likes}</b>
@@ -35,7 +36,7 @@ function renderMarkup(images) {
           </p>
         </div>
       </div>
-    </a>`;
+        `;
     })
     .join('');
 
