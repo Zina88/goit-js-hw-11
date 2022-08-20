@@ -55,12 +55,6 @@ async function onSearchForm(e) {
     simpleLightBox.refresh();
     refs.searchForm.reset();
   }
-
-  // if (data.totalHits > 40) {
-  //   refs.loadMore.classList.remove('is-hidden');
-  // } else {
-  //   refs.loadMore.classList.add('is-hidden');
-  // }
 }
 
 async function onLoadMore() {
