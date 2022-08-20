@@ -54,6 +54,7 @@ async function onSearchForm(e) {
     await renderMarkup(data.hits);
     simpleLightBox.refresh();
     refs.searchForm.reset();
+    refs.loadMore.classList.remove('is-hidden');
   }
 }
 
@@ -72,7 +73,6 @@ async function onLoadMore() {
       "We're sorry, but you've reached the end of search results."
     );
   }
-  refs.loadMore.classList.add('is-hidden');
 }
 
 function increment() {
