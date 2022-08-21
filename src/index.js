@@ -64,19 +64,19 @@ async function onSearchForm(e) {
 }
 
 async function onLoadMore() {
+  increment();
   const response = await fetchPicture(searchQuery, page);
   const data = response.data;
-  increment();
   refs.loadMore.classList.add('is-hidden');
-
   renderMarkup(data.hits);
   simpleLightBox.refresh();
   scrollGallery();
 
   if (page * 40 > data.totalHits) {
     onNotify();
-  } else if (page * 40 < data.totalHits)
+  } else if (page * 40 < data.totalHits) {
     refs.loadMore.classList.remove('is-hidden');
+  }
 }
 
 function onNotify() {
