@@ -36,27 +36,27 @@ async function onSearchForm(e) {
   if (searchQuery === '') {
     return;
   }
+  refs.loadMore.classList.add('is-hidden');
   refs.gallery.innerHTML = '';
   resetPage();
 
-  const response = await fetchPicture(searchQuery, page);
-  const data = response.data;
-
   try {
+    const response = await fetchPicture(searchQuery, page);
+    const data = response.data;
+
     if (data.totalHits === 0) {
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-    } else if (data.totalHits < 40) {
-      refs.loadMore.classList.add('is-hidden');
-      renderMarkup(data.hits);
-      simpleLightBox.refresh();
-    } else {
+    } else if (page * 40 < data.totalHits) {
       Notify.success(`Hooray! We found ${data.totalHits} images.`);
       renderMarkup(data.hits);
       simpleLightBox.refresh();
-      refs.searchForm.reset();
       refs.loadMore.classList.remove('is-hidden');
+    } else if (page * 40 > data.totalHits) {
+      onNotify();
+      renderMarkup(data.hits);
+      simpleLightBox.refresh();
     }
   } catch (error) {
     console.log(error);
@@ -64,19 +64,24 @@ async function onSearchForm(e) {
 }
 
 async function onLoadMore() {
-  increment();
   const response = await fetchPicture(searchQuery, page);
   const data = response.data;
+  increment();
+  refs.loadMore.classList.add('is-hidden');
+
   renderMarkup(data.hits);
   simpleLightBox.refresh();
   scrollGallery();
 
   if (page * 40 > data.totalHits) {
-    refs.loadMore.classList.add('is-hidden');
-    Notify.failure(
-      "We're sorry, but you've reached the end of search results."
-    );
-  }
+    onNotify();
+  } else if (page * 40 < data.totalHits)
+    refs.loadMore.classList.remove('is-hidden');
+}
+
+function onNotify() {
+  refs.loadMore.classList.add('is-hidden');
+  Notify.failure("We're sorry, but you've reached the end of search results.");
 }
 
 function increment() {
