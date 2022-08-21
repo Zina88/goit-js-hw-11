@@ -1,5 +1,3 @@
-export { renderMarkup };
-
 const refs = {
   gallery: document.querySelector('.gallery'),
 };
@@ -42,3 +40,5 @@ async function renderMarkup(images) {
 
   refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
+
+export default renderMarkup;

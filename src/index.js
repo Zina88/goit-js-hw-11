@@ -1,5 +1,5 @@
-import { fetchPicture } from './js/fetchAPI';
-import { renderMarkup } from './js/render-markup';
+import fetchPicture from './js/fetchAPI';
+import renderMarkup from './js/render-markup';
 import { Notify } from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -18,7 +18,6 @@ const simpleLightBox = new SimpleLightbox('.photo-card a', {
 
 let searchQuery = '';
 let page = 1;
-const perPage = 40;
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -34,37 +33,42 @@ refs.loadMore.classList.add('is-hidden');
 async function onSearchForm(e) {
   e.preventDefault();
   searchQuery = e.currentTarget.searchQuery.value.trim();
-  refs.gallery.innerHTML = '';
-  resetPage();
-
   if (searchQuery === '') {
     return;
   }
+  refs.gallery.innerHTML = '';
+  resetPage();
 
-  const response = await fetchPicture(searchQuery, page, perPage);
+  const response = await fetchPicture(searchQuery, page);
   const data = response.data;
-  console.log(response.data);
 
-  if (data.totalHits === 0) {
-    Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-  } else {
-    Notify.success(`Hooray! We found ${data.totalHits} images.`);
-    await renderMarkup(data.hits);
-    simpleLightBox.refresh();
-    refs.searchForm.reset();
-    refs.loadMore.classList.remove('is-hidden');
+  try {
+    if (data.totalHits === 0) {
+      Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    } else if (data.totalHits < 40) {
+      refs.loadMore.classList.add('is-hidden');
+      renderMarkup(data.hits);
+      simpleLightBox.refresh();
+    } else {
+      Notify.success(`Hooray! We found ${data.totalHits} images.`);
+      renderMarkup(data.hits);
+      simpleLightBox.refresh();
+      refs.searchForm.reset();
+      refs.loadMore.classList.remove('is-hidden');
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
 async function onLoadMore() {
   increment();
-  const response = await fetchPicture(searchQuery, page, perPage);
+  const response = await fetchPicture(searchQuery, page);
   const data = response.data;
-
   renderMarkup(data.hits);
-  await simpleLightBox.refresh();
+  simpleLightBox.refresh();
   scrollGallery();
 
   if (page * 40 > data.totalHits) {
