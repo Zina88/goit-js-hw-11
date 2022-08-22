@@ -64,18 +64,24 @@ async function onSearchForm(e) {
 }
 
 async function onLoadMore() {
-  increment();
-  const response = await fetchPicture(searchQuery, page);
-  const data = response.data;
   refs.loadMore.classList.add('is-hidden');
-  renderMarkup(data.hits);
-  simpleLightBox.refresh();
-  scrollGallery();
+  increment();
 
-  if (page * 40 > data.totalHits) {
-    onNotify();
-  } else if (page * 40 < data.totalHits) {
-    refs.loadMore.classList.remove('is-hidden');
+  try {
+    const response = await fetchPicture(searchQuery, page);
+    const data = response.data;
+
+    renderMarkup(data.hits);
+    simpleLightBox.refresh();
+    scrollGallery();
+
+    if (page * 40 > data.totalHits) {
+      onNotify();
+    } else {
+      refs.loadMore.classList.remove('is-hidden');
+    }
+  } catch (error) {
+    console.log(error);
   }
 }
 
